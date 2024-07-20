@@ -18,12 +18,13 @@ return new class extends Migration
             $table->string('path');
             $table->string('name');
             $table->boolean('status')->default(0);
+            $table->integer('queue')->default(1);
             $table->timestamps();
         });
 
         Enviromet::create([
             'path' => base_path(),
-            'user' => 0,
+            'user' => 1,
             'name' => "Default base path",
             'status' => 1
         ]);

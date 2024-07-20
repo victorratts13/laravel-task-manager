@@ -19,6 +19,21 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            /**
+             * Access can be 
+             * 0 - Root: All access to systems and configurations
+             * 1 - Supervisor: Can register new users, administrate services
+             * and manager queue tasks for all users
+             * 2 - Client: Can administrate self account and add self services
+             * to general task manager 
+             */
+            $table->integer('access')->default(1);
+            /**
+             * Status can be
+             * 0 - Deny access
+             * 1 - Allow access
+             */
+            $table->boolean('status')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -39,9 +54,11 @@ return new class extends Migration
         });
 
         User::create([
-            'name' => "administrador",
-            'email' => "admin@local.com",
-            'password' => Hash::make('adminn@2024')
+            'name' => "Root Access",
+            'email' => "root@local.com",
+            'access' => 0,
+            'status' => 1,
+            'password' => Hash::make('root@2024')
         ]);
     }
 

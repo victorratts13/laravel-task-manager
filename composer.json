@@ -11,6 +11,7 @@
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
+        "opcodesio/log-viewer": "^3.10",
         "openspout/openspout": "^4.24",
         "power-components/livewire-powergrid": "^5.9",
         "wireui/wireui": "^2.0"
