@@ -105,7 +105,7 @@ class BackEndController extends Controller
         }
 
         // Opcional: Remove o diretório de origem se estiver vazio
-        if (File::isDirectoryEmpty($origem)) {
+        if (File::isEmptyDirectory($origem)) {
             File::deleteDirectory($origem);
         }
     }

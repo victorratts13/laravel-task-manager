@@ -68,9 +68,9 @@ class updater extends Command
         Artisan::call('migrate');
         Artisan::call('optimize:clear');
         $this->warn("| Update composer");
-        $update = $this->ExecuteCommand("{$composer} update");
+        $update = $this->ExecuteCommand("{$composer} update -W");
         if ($update->status) {
-            $install = $this->ExecuteCommand("{$composer} install");
+            $install = $this->ExecuteCommand("{$composer} install -W");
             if ($install->status) {
                 $this->info($install->buffer);
                 $this->info($install->message);
