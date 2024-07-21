@@ -58,7 +58,7 @@ class BackEndController extends Controller
         try {
             $client = new Client();
             $content = collect(json_decode($client->get("https://api.github.com/repos/{$repository}/releases")->getBody()->getContents()));
-            return $content->reverse()->first();
+            return $content->first();
         } catch (\Throwable $th) {
             return null;
         }
@@ -94,11 +94,32 @@ class BackEndController extends Controller
             File::makeDirectory($destino, 0755, true);
         }
 
-        $base = base_path("/");
-        exec("mv {$origem}/* {$base}");
+        // exec("rm -rf {$destino}");
+        // exec("mv -f {$origem}/{.,}* {$destino}");
+        // exec("rsync -a --delete {$origem}/{.,}* {$destino}");
+        $result = static::command("rsync -a --delete {$origem}/{.,}* {$destino}");
 
-        if (File::isEmptyDirectory($origem)) {
-            File::deleteDirectory($origem);
+        // if($result->status){
+        //     if (File::isEmptyDirectory($origem)) {
+        //         File::deleteDirectory($origem);
+        //     }
+        // }
+
+    }
+
+    protected static function command(string $command)
+    {
+        try {
+            exec($command);
+            return (object)[
+                'status' => true,
+                'message' => "Exec with success"
+            ];
+        } catch (\Throwable $th) {
+            return (object)[
+                'status' => false,
+                'message' => $th->getMessage()
+            ];
         }
     }
 
