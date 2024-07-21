@@ -9,6 +9,8 @@ use Symfony\Component\Process\Process;
 
 class updater extends Command
 {
+    private $proccessInfo;
+
     public static string $repository = "victorratts13/laravel-task-manager";
     /**
      * The name and signature of the console command.
@@ -48,20 +50,73 @@ class updater extends Command
         $this->info("| Download from: {$metadata->zipball_url}");
         $result = BackEndController::downloadAndUpdate($metadata->zipball_url);
 
-        if($result->status){
+        if ($result->status) {
             $this->info("| {$result->message}");
         } else {
             $this->error("| {$result->message}");
-            return ;
+            return;
         }
 
-        $this::Posinstall();
-        
+        $this->Posinstall();
+
+        $this->alert("Finish service");
     }
 
-    protected static function Posinstall() {
+    protected function Posinstall()
+    {
+        $composer = env('COMPOSER_ALIASE', 'composer');
         Artisan::call('migrate');
         Artisan::call('optimize:clear');
-        Process::fromShellCommandline("composer install");
+        $this->warn("| Update composer");
+        $update = $this->ExecuteCommand("{$composer} update");
+        if ($update->status) {
+            $install = $this->ExecuteCommand("{$composer} install");
+            if ($install->status) {
+                $this->info($install->buffer);
+                $this->info($install->message);
+            } else {
+                $this->info($install->buffer);
+                $this->error($install->message);
+            }
+        } else {
+            $this->info($update->buffer);
+            $this->error($update->message);
+        }
+    }
+
+    private function ExecuteCommand(string $command)
+    {
+        $this->info('| ℹ️  Executando comando: ' . $command);
+        $process = Process::fromShellCommandline($command);
+        $process->start(function ($type, $buffer) {
+            if (Process::ERR === $type) {
+                $this->proccessInfo = (object)[
+                    'status' => false,
+                    'message' => "| ❌ ERROR: um erro aconteceu ao executar o processo",
+                    'buffer' => $buffer
+                ];
+            } else {
+                $this->proccessInfo = (object) [
+                    'status' => true,
+                    'message' => "| ✅ Comando executado com sucesso!",
+                    'buffer'  => $buffer
+                ];
+            }
+        });
+
+        // Aguarda até que o processo seja iniciado
+        while ($process->isRunning()) {
+            sleep(1);
+        }
+
+        if (isset($this->proccessInfo)) {
+            return $this->proccessInfo;
+        }
+
+        return (object) [
+            'status' => false,
+            'message' => "| Processo retornou null ou vazio",
+            "buffer" => "No buffer"
+        ];
     }
 }

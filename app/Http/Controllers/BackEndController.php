@@ -6,10 +6,12 @@ use Dotenv\Loader\Loader;
 use Dotenv\Parser\Parser;
 use Dotenv\Repository\RepositoryBuilder;
 use Dotenv\Store\StringStore;
+use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Process\Process;
 use ZipArchive;
@@ -80,6 +82,35 @@ class BackEndController extends Controller
         }
     }
 
+    private static function moveFiles($origem, $destino)
+    {
+        // Verifica se o diretório de origem existe
+        if (!File::exists($origem)) {
+            throw new Exception("O diretório de origem não existe: {$origem}");
+        }
+
+        // Verifica se o diretório de destino existe, caso contrário, cria-o
+        if (!File::exists($destino)) {
+            File::makeDirectory($destino, 0755, true);
+        }
+
+        // Obtém todos os arquivos e pastas do diretório de origem
+        $arquivosEPastas = File::allFiles($origem);
+
+        foreach ($arquivosEPastas as $item) {
+            $caminhoDestino = $destino . DIRECTORY_SEPARATOR . $item->getFilename();
+
+            // Move cada arquivo ou pasta para o diretório de destino
+            File::move($item->getPathname(), $caminhoDestino);
+        }
+
+        // Opcional: Remove o diretório de origem se estiver vazio
+        if (File::isDirectoryEmpty($origem)) {
+            File::deleteDirectory($origem);
+        }
+    }
+
+
     public static function downloadAndUpdate(string $url)
     {
         try {
@@ -92,7 +123,13 @@ class BackEndController extends Controller
             $client->get($url, ['sink' => $tempPath]);
 
             // Extrai o zip
-            static::extractZip($tempPath, base_path());
+            static::extractZip($tempPath, base_path("/upgrades"));
+
+
+            // Move files to base path
+            collect(File::directories(base_path("/upgrades")))->map(function ($mp) {
+                static::moveFiles($mp, base_path("/"));
+            });
 
             // Remove o arquivo zip temporário
             unlink($tempPath);
