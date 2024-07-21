@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Http\Controllers\BackEndController;
 use App\Models\Enviromet;
 use App\Models\ServiceLogs;
 use App\Models\ServiceProccess;
@@ -34,18 +35,35 @@ class ComandExecJob implements ShouldQueue
      */
     public function handle(): void
     {
+
+        $backend = new BackEndController();
+        Log::info($this->proccess->variables);
+        if(isset($this->proccess->variables)){
+            $app = $backend->loadEnvironmentFromString($this->proccess->variables);
+            Log::info($app);
+        }
+
         if(!$this->CheckComandStatus($this->proccess->command)){
-            $this->ExecuteCommand("cd {$this->proccess->enviroment()->first()->path} && {$this->proccess->command}");
+            $prepare = "cd {$this->proccess->enviroment()->first()->path} && {$this->proccess->command}";
+            $this->ExecuteCommand($prepare);
+            // exec($prepare);
             $proccessInfo = $this->getProcessInfo($this->proccess->command)->first();
             if(isset($proccessInfo)){
                 ServiceProccess::where('id', $this->proccess->id)->first()->update(['pid' => $proccessInfo->pid]);
             }
             
-            ServiceLogs::create([
-                'service' => $this->proccess->id,
-                'command' => $this->proccess->command,
-                'output' => $this->proccessInfo->buffer
-            ]);
+            if($this->proccess->loggable){
+                ServiceLogs::create([
+                    'service' => $this->proccess->id,
+                    'command' => $this->proccess->command,
+                    'output' => $this->proccessInfo->buffer
+                ]);
+            }
+        } else {
+            $proccessInfo = $this->getProcessInfo($this->proccess->command)->first();
+            if(isset($proccessInfo)){
+                ServiceProccess::where('id', $this->proccess->id)->first()->update(['pid' => $proccessInfo->pid]);
+            }
         }
     }
 

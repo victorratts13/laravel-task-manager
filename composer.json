@@ -8,6 +8,7 @@
         "php": "^8.2",
         "asdh/laravel-flatpickr": "^2.2",
         "filament/filament": "^3.2",
+        "graham-campbell/github": "^12.6",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",

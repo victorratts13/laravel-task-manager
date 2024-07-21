@@ -34,6 +34,7 @@ class TaskManager extends Command
         $processess = [];
 
         $this->alert("Laravel TaskManager Console");
+        
         while (true) {
             // Process::fromShellCommandline("clear");
             $this->info('| Checking users');

@@ -12,6 +12,7 @@ use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Set;
@@ -123,7 +124,8 @@ class EnviromentResource extends Resource
                                 ];
                             })->pluck('path', 'path');
                         }
-                    })
+                    }),
+                Textarea::make('variables')->rows(20)->columnSpanFull()->placeholder("# Add enviroment variables here")
             ]);
     }
 

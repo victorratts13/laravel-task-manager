@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('name');
             $table->boolean('status')->default(0);
             $table->integer('queue')->default(1);
+            $table->longText('variables')->nullable();
             $table->timestamps();
         });
 

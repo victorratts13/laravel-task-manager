@@ -9,7 +9,7 @@ class Enviromet extends Model
 {
     use HasFactory;
     protected $table = "enviromets";
-    protected $fillable = ['user', 'path', 'name', 'status', 'queue'];
+    protected $fillable = ['user', 'path', 'name', 'status', 'queue', 'variables'];
 
     public function user() {
         return $this->hasOne(User::class, 'id', 'user');

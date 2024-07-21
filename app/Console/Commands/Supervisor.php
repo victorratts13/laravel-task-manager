@@ -39,7 +39,7 @@ class Supervisor extends Command
         $this->alert("Supervisor 1.0.6");
 
         $checkComandProccess = [
-            "app:task-manager --id={$id}" => "app:task-manager --id={$id} &",
+            "app:task-manager --id={$id}" => "php artisan app:task-manager --id={$id} &",
         ];
 
         if(Queues::count() > 0){
@@ -50,6 +50,8 @@ class Supervisor extends Command
                 }
             }
         }
+
+        // Log::info($checkComandProccess);
 
         foreach ($checkComandProccess as $check => $comand) {
             $checker = $this->CheckComandStatus($check);
