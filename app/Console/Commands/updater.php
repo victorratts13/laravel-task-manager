@@ -3,10 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\BackEndController;
-use GrahamCampbell\GitHub\Facades\GitHub;
-use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
+use Symfony\Component\Process\Process;
 
 class updater extends Command
 {
@@ -63,5 +62,6 @@ class updater extends Command
     protected static function Posinstall() {
         Artisan::call('migrate');
         Artisan::call('optimize:clear');
+        Process::fromShellCommandline("composer install");
     }
 }

@@ -10,6 +10,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\Process\Process;
 use ZipArchive;
 
@@ -44,19 +45,10 @@ class BackEndController extends Controller
         // Analisa o armazenamento
         $parser = new Parser();
         $entries = $parser->parse($store->read());
-
-        // dd($entri);
-
         foreach ($entries as $entry) {
-            // dd($entry->getName());
-            // dd((string)$entry->getValue()->get()->getChars());
-            $repository->set($entry->getName(), (string)$entry->getValue()->get()->getChars());
+            $_ENV[$entry->getName()] = (string)$entry->getValue()->get()->getChars();
         }
-
-        // // Recarrega as configurações do Laravel para refletir as novas variáveis de ambiente
-        app()->configure();
-
-        return Config::all();
+        return (object)$_ENV;
     }
 
     public static function GetLastVersion(string $repository)
