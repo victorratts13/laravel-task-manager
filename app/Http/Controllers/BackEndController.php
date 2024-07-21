@@ -94,17 +94,9 @@ class BackEndController extends Controller
             File::makeDirectory($destino, 0755, true);
         }
 
-        // Obtém todos os arquivos e pastas do diretório de origem
-        $arquivosEPastas = File::allFiles($origem);
+        $base = base_path("/");
+        exec("mv {$origem}/* {$base}");
 
-        foreach ($arquivosEPastas as $item) {
-            $caminhoDestino = $destino . DIRECTORY_SEPARATOR . $item->getFilename();
-
-            // Move cada arquivo ou pasta para o diretório de destino
-            File::move($item->getPathname(), $caminhoDestino);
-        }
-
-        // Opcional: Remove o diretório de origem se estiver vazio
         if (File::isEmptyDirectory($origem)) {
             File::deleteDirectory($origem);
         }
