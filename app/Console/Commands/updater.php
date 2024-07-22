@@ -47,9 +47,10 @@ class updater extends Command
         }
 
         $this->warn("| Get version {$metadata->name}");
+        $updater = collect($metadata->assets)->where('name', 'update.zip')->first();
         $this->info("| Download from: {$metadata->zipball_url}");
-        
-        $result = BackEndController::downloadAndUpdate($metadata->zipball_url);
+
+        $result = BackEndController::downloadAndUpdate($updater->browser_download_url);
 
         if ($result->status) {
             $this->info("| {$result->message}");

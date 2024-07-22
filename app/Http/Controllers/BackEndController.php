@@ -164,17 +164,7 @@ class BackEndController extends Controller
 
             // Extrai o zip
             static::extractZip($tempPath, base_path());
-
-
-            // Move files to base path
-            // collect(File::directories(base_path("/upgrades")))->map(function ($mp) {
-            //     $name = UtilsController::nameDir($mp);
-            //     if($name !== "." || $name !== ".."){
-            //         static::moveFiles($mp, base_path());
-            //     }
-            // });
-
-            // Remove o arquivo zip temporário
+            
             unlink($tempPath);
 
             return (object)[
