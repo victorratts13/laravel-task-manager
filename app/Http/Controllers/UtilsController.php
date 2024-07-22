@@ -13,7 +13,12 @@ class UtilsController extends Controller
     {
 
         // Caminho para o arquivo zip
-        $zipFilePath = base_path($zipFilename);
+
+        if(!strpos("/", $zipFilename)){
+            $zipFilePath = base_path($zipFilename);
+        } else {
+            $zipFilePath = $zipFilename;
+        }
 
         // Iniciar a criação do arquivo zip
         $zipper = new Madzipper();
@@ -28,12 +33,12 @@ class UtilsController extends Controller
 
         $zipper->close();
 
-        return base_path("{$zipFilename}");
+        return $zipFilePath;
     }
 
     public static function addresingFilestoZip(): array
     {
-        $onlyFiles = ['app/', 'bootstrap/', 'config/', 'database/', 'public/', 'resources/', 'routes/', 'storage/', 'tests/', '.env.example', '.htaccess', 'artisan', 'composer.json', 'index.php', 'package.json', 'phpunit.xml', 'vite.config.js'];
+        $onlyFiles = ['app/', 'bootstrap/', 'config/', 'database/', 'public/', 'resources/', 'routes/', '.env.example', '.htaccess', 'artisan', 'composer.json', 'index.php', 'package.json', 'phpunit.xml', 'vite.config.js'];
         $addresingFiles = [];
         foreach ($onlyFiles as $value) {
             $addresingFiles[$value] = __DIR__ . '/../../../' . $value;

@@ -48,6 +48,7 @@ class updater extends Command
 
         $this->warn("| Get version {$metadata->name}");
         $this->info("| Download from: {$metadata->zipball_url}");
+        
         $result = BackEndController::downloadAndUpdate($metadata->zipball_url);
 
         if ($result->status) {
@@ -71,14 +72,9 @@ class updater extends Command
         Artisan::call('optimize:clear');
         $this->warn("| Update composer");
         $update = $this->ExecuteCommand("{$composer} update");
+        $this->info($update->buffer);
         $install = $this->ExecuteCommand("{$composer} install");
-        if ($install->status) {
-            $this->info($install->buffer);
-            $this->info($install->message);
-        } else {
-            $this->info($install->buffer);
-            $this->error($install->message);
-        }
+        $this->info($install->buffer);
     }
 
     private function ExecuteCommand(string $command)

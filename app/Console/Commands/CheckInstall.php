@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
 class CheckInstall extends Command
 {
@@ -27,26 +29,46 @@ class CheckInstall extends Command
     {
         $this->alert("Checking instalation service");
         $composer = env('COMPOSER_ALIASE', 'composer');
-
-        if(file_exists(__DIR__ . "/../../../.env")){
+        
+        if(!file_exists(__DIR__ . "/../../../.env")){
             $this->warn("| Create new .env file");
             copy(__DIR__ . "/../../../.env.example", __DIR__ . "/../../../.env");
         } else {
             $this->info("|✅ Env file is created");
         } 
 
+        $key = env("APP_KEY");
+
         if(!is_dir(__DIR__ . "/../../../vendor")){
-            $key = env("APP_KEY");
             $this->warn("| Create new install");
             exec("{$composer} install");
-            if(isset($key)){
+            if(!isset($key)){
                 $this->warn("| Create new key");
                 exec("php artisan key:generate");
             }
         } else {
+            if(!isset($key)){
+                $this->warn("| Create new key");
+                exec("php artisan key:generate");
+            }
             $this->info("|✅ vendor folder is created");
         }
 
+        if(!static::CheckDatabase()){
+            $this->warn("| migrate database");
+            Artisan::call("migrate");
+        } else {
+            $this->info("|✅ Database is migrated");
+        }
 
+    }
+
+    private static function CheckDatabase() {
+        try {
+            DB::table("updaters")->first();
+            return true;
+        } catch (\Throwable $th) {
+            return false;
+        }
     }
 }

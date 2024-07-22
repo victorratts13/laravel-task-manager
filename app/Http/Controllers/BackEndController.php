@@ -123,11 +123,12 @@ class BackEndController extends Controller
             File::makeDirectory($destino, 0755, true);
         }
 
-        $temp = Str::random(8) . ".zip";
+        $temp = $origem . ".zip";
 
-        UtilsController::MakeZipFile($temp);
-        static::extractZip(base_path($temp), base_path("/"));
-        File::delete(base_path($temp));
+        $zipFile = UtilsController::MakeZipFile($temp);
+        static::extractZip($temp, $destino);
+        File::delete($temp);
+        dump($zipFile);
 
     }
 
@@ -162,16 +163,16 @@ class BackEndController extends Controller
             $client->get($url, ['sink' => $tempPath]);
 
             // Extrai o zip
-            static::extractZip($tempPath, base_path("/upgrades"));
+            static::extractZip($tempPath, base_path());
 
 
             // Move files to base path
-            collect(File::directories(base_path("/upgrades")))->map(function ($mp) {
-                $name = UtilsController::nameDir($mp);
-                if($name !== "." || $name !== ".."){
-                    static::moveFiles($mp, base_path("/"));
-                }
-            });
+            // collect(File::directories(base_path("/upgrades")))->map(function ($mp) {
+            //     $name = UtilsController::nameDir($mp);
+            //     if($name !== "." || $name !== ".."){
+            //         static::moveFiles($mp, base_path());
+            //     }
+            // });
 
             // Remove o arquivo zip temporário
             unlink($tempPath);
