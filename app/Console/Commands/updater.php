@@ -65,22 +65,19 @@ class updater extends Command
     protected function Posinstall()
     {
         $composer = env('COMPOSER_ALIASE', 'composer');
+        $this->warn("- Run migrations");
         Artisan::call('migrate');
+        $this->warn("- Run optimizer");
         Artisan::call('optimize:clear');
         $this->warn("| Update composer");
         $update = $this->ExecuteCommand("{$composer} update");
-        if ($update->status) {
-            $install = $this->ExecuteCommand("{$composer} install");
-            if ($install->status) {
-                $this->info($install->buffer);
-                $this->info($install->message);
-            } else {
-                $this->info($install->buffer);
-                $this->error($install->message);
-            }
+        $install = $this->ExecuteCommand("{$composer} install");
+        if ($install->status) {
+            $this->info($install->buffer);
+            $this->info($install->message);
         } else {
-            $this->info($update->buffer);
-            $this->error($update->message);
+            $this->info($install->buffer);
+            $this->error($install->message);
         }
     }
 

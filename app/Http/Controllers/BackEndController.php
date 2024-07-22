@@ -29,7 +29,7 @@ class BackEndController extends Controller
         try {
             $key = env('APP_KEY');
             Artisan::call('app:supervisor', ['--id' => $key, '--restart' => true]);
-            // Process::fromShellCommandline("php artisan app:supervisor --restart --id={$key} &");
+            
             return response()->json([
                 'status' => true,
                 'message' => "Supervisor is running!"
@@ -127,20 +127,7 @@ class BackEndController extends Controller
 
         UtilsController::MakeZipFile($temp);
         static::extractZip(base_path($temp), base_path("/"));
-
-        // copy("{$origem}/", $destino);
-        // static::rcopy($origem, $destino);
-
-        // exec("rm -rf {$destino}");
-        // exec("mv -f {$origem}/{.,}* {$destino}");
-        // exec("rsync -a --delete {$origem}/{.,}* {$destino}");
-        // $result = static::command("rsync -a --delete {$origem}/{.,}* {$destino}");
-
-        // if($result->status){
-        //     if (File::isEmptyDirectory($origem)) {
-        //         File::deleteDirectory($origem);
-        //     }
-        // }
+        File::delete(base_path($temp));
 
     }
 
@@ -194,6 +181,7 @@ class BackEndController extends Controller
                 'message' => "Install with success"
             ];
         } catch (\Throwable $th) {
+            // dd($th);
             return (object)[
                 'status' => false,
                 'message' => $th->getMessage()

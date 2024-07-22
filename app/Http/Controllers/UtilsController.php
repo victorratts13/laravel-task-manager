@@ -36,7 +36,7 @@ class UtilsController extends Controller
         $onlyFiles = ['app/', 'bootstrap/', 'config/', 'database/', 'public/', 'resources/', 'routes/', 'storage/', 'tests/', '.env.example', '.htaccess', 'artisan', 'composer.json', 'index.php', 'package.json', 'phpunit.xml', 'vite.config.js'];
         $addresingFiles = [];
         foreach ($onlyFiles as $value) {
-            $addresingFiles[$value] = __DIR__ . '/' . $value;
+            $addresingFiles[$value] = __DIR__ . '/../../../' . $value;
         }
 
         return $addresingFiles;
