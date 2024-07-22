@@ -35,10 +35,11 @@ class UpdaterResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('id', 'desc')
             ->columns([
                 TextColumn::make('version')->badge()->color('primary'),
                 TextColumn::make('node')->icon('heroicon-m-hashtag'),
-                TextColumn::make('repository')->icon('bi-git')->url(function($record){
+                TextColumn::make('repository')->icon('bi-git')->url(function ($record) {
                     return $record->repository;
                 })->limit(30)->openUrlInNewTab(),
                 TextColumn::make('created_at')->dateTime('d/m/Y H:i')

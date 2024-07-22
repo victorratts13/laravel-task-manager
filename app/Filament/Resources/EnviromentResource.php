@@ -93,7 +93,7 @@ class EnviromentResource extends Resource
                         }
                         // return ['teste', 'teste02'];
                     })
-                    ->options(function($state){
+                    ->options(function ($state) {
                         if ($state) {
                             if (File::isDirectory($state)) {
                                 $directories = collect(File::directories($state))->filter(function ($mp) use ($state) {
@@ -149,7 +149,13 @@ class EnviromentResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()->before(function ($record) {
+                    $record->services()->get()->map(function ($mp) {
+                        $mp->logs()->delete();
+                    });
+
+                    $record->services()->delete();
+                }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

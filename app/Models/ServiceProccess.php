@@ -14,4 +14,8 @@ class ServiceProccess extends Model
     public function enviroment() {
         return $this->hasOne(Enviromet::class, 'id', 'env');
     }
+
+    public function logs() {
+        return $this->hasMany(ServiceLogs::class, 'service', 'id');
+    }
 }

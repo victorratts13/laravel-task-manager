@@ -48,7 +48,17 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()->before(function($record){
+                    $record->enviroments()->get()->map(function($mp){
+                        $mp->services()->get()->map(function($mp){
+                            $mp->logs()->delete();
+                        });
+
+                        $mp->services()->delete();
+                    });
+
+                    $record->enviroments()->delete();
+                }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
