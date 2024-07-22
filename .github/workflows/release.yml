@@ -2,8 +2,8 @@ name: Create Release V1
 
 on:
   push:
-    tags:
-      - 'v*.*.*'  # Isso vai disparar a ação para tags de versão (por exemplo, v1.0.0, v1.0.1)
+    branches:
+      - main  # Isso vai disparar a ação para tags de versão (por exemplo, v1.0.0, v1.0.1)
 
 jobs:
   release:
