@@ -13,11 +13,17 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use Symfony\Component\Process\Process;
 use ZipArchive;
 
 class BackEndController extends Controller
 {
+
+    public static string $utils = UtilsController::class;
+    
     public function Supervisor()
     {
         try {
@@ -82,6 +88,29 @@ class BackEndController extends Controller
         }
     }
 
+    // removes files and non-empty directories
+    private static function rrmdir($dir)
+    {
+        if (is_dir($dir)) {
+            $files = scandir($dir);
+            foreach ($files as $file)
+                if ($file != "." && $file != "..") static::rrmdir("$dir/$file");
+            rmdir($dir);
+        } else if (file_exists($dir)) unlink($dir);
+    }
+
+    // copies files and non-empty directories
+    private static function rcopy($src, $dst)
+    {
+        if (file_exists($dst)) static::rrmdir($dst);
+        if (is_dir($src)) {
+            mkdir($dst);
+            $files = scandir($src);
+            foreach ($files as $file)
+                if ($file != "." && $file != "..") static::rcopy("$src/$file", "$dst/$file");
+        } else if (file_exists($src)) copy($src, $dst);
+    }
+
     private static function moveFiles($origem, $destino)
     {
         // Verifica se o diretório de origem existe
@@ -94,16 +123,24 @@ class BackEndController extends Controller
             File::makeDirectory($destino, 0755, true);
         }
 
+        $temp = Str::random(8) . ".zip";
+
+        UtilsController::MakeZipFile($temp);
+        static::extractZip(base_path($temp), base_path("/"));
+
+        // copy("{$origem}/", $destino);
+        // static::rcopy($origem, $destino);
+
         // exec("rm -rf {$destino}");
         // exec("mv -f {$origem}/{.,}* {$destino}");
         // exec("rsync -a --delete {$origem}/{.,}* {$destino}");
-        $result = static::command("rsync -a --delete {$origem}/{.,}* {$destino}");
+        // $result = static::command("rsync -a --delete {$origem}/{.,}* {$destino}");
 
-        if($result->status){
-            if (File::isEmptyDirectory($origem)) {
-                File::deleteDirectory($origem);
-            }
-        }
+        // if($result->status){
+        //     if (File::isEmptyDirectory($origem)) {
+        //         File::deleteDirectory($origem);
+        //     }
+        // }
 
     }
 
@@ -124,6 +161,8 @@ class BackEndController extends Controller
     }
 
 
+
+
     public static function downloadAndUpdate(string $url)
     {
         try {
@@ -141,7 +180,10 @@ class BackEndController extends Controller
 
             // Move files to base path
             collect(File::directories(base_path("/upgrades")))->map(function ($mp) {
-                static::moveFiles($mp, base_path("/"));
+                $name = UtilsController::nameDir($mp);
+                if($name !== "." || $name !== ".."){
+                    static::moveFiles($mp, base_path("/"));
+                }
             });
 
             // Remove o arquivo zip temporário
