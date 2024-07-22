@@ -99,11 +99,11 @@ class BackEndController extends Controller
         // exec("rsync -a --delete {$origem}/{.,}* {$destino}");
         $result = static::command("rsync -a --delete {$origem}/{.,}* {$destino}");
 
-        // if($result->status){
-        //     if (File::isEmptyDirectory($origem)) {
-        //         File::deleteDirectory($origem);
-        //     }
-        // }
+        if($result->status){
+            if (File::isEmptyDirectory($origem)) {
+                File::deleteDirectory($origem);
+            }
+        }
 
     }
 
