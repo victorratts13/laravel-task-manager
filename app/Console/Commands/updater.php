@@ -55,7 +55,7 @@ class updater extends Command
 
         if ($result->status) {
             $this->info("| {$result->message}");
-            Updater::create([
+            ModelsUpdater::create([
                 'version' => $metadata->tag_name,
                 'node' => $metadata->node_id,
                 'repository' => $metadata->html_url,
