@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\BackEndController;
+use App\Models\Updater as ModelsUpdater;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Process\Process;
@@ -54,6 +55,13 @@ class updater extends Command
 
         if ($result->status) {
             $this->info("| {$result->message}");
+            Updater::create([
+                'version' => $metadata->tag_name,
+                'node' => $metadata->node_id,
+                'repository' => $metadata->html_url,
+                'hash' => sha1($metadata->node_id),
+                'url' => $metadata->zipball_url
+            ]);
         } else {
             $this->error("| {$result->message}");
             return;
