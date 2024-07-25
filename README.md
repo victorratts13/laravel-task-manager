@@ -1,9 +1,11 @@
 <p align="center">
 <a href="#" target="_blank" style="display: flex; justify-content: center;">
 <img src="public/app.png" width="400" alt="Laravel Logo" style="width: 80px;">
-<br />
-<h3>Task-manager</h3>
 </a>
+</p>
+
+<p>
+<h3>Task-manager</h3>
 </p>
 
 <p align="center">
