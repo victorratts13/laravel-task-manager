@@ -4,8 +4,8 @@
 </a>
 </p>
 
-<p>
-<h3>Task-manager</h3>
+<p align="center">
+<a href="#" style="font-size: 30px;">Laravel Task-Manager</a>
 </p>
 
 <p align="center">
