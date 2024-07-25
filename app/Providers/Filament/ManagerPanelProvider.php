@@ -29,6 +29,7 @@ class ManagerPanelProvider extends PanelProvider
             ->id('manager')
             ->path('manager')
             ->brandLogo(asset('/app.png'))
+            ->favicon(asset('/app.png'))
             ->brandLogoHeight('50px')
             ->login()
             ->colors([
