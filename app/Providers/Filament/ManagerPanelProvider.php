@@ -26,12 +26,15 @@ class ManagerPanelProvider extends PanelProvider
             ->default()
             ->id('manager')
             ->path('manager')
+            ->brandLogo(asset('/app.png'))
+            ->brandLogoHeight('50px')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Cyan,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
+            ->viteTheme('resources/css/filament/manager/theme.css')
             ->pages([
                 Pages\Dashboard::class,
             ])

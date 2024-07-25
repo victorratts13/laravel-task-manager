@@ -1,0 +1,8 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+.dark\:bg-gray-900:is(.dark *) {
+    --tw-bg-opacity: 1;
+    background-color: #04111e !important;
+}
