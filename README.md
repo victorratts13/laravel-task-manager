@@ -66,6 +66,12 @@ php artisan migrate
 After installation, the system is accessible via the installation URL.
 To access the panel, use the route ```/manager```.
 
-However, the system still needs to be configured. For the system to function, you need to point only 1 cronjob to the endpoint ```/supervisor```. This way, the system internally executes the command ```app:supervisor```, which keeps the registered processes and services running continuously according to the configuration and interval set.
+However, the system still needs to be configured. For the system to function, you need to point only 1 cronjob to the endpoint ```/supervisor``` with ```cURL``` or ```wget```. This way, the system internally executes the command ```app:supervisor```, which keeps the registered processes and services running continuously according to the configuration and interval set.
 
 >- NOTE: To ensure that the Manager's services remain always running, it is recommended to use a 1-minute interval for the cronjob.
+
+Example to set cronjob
+ ```bash
+* * * * * curl https://[your-taskmanager-domain.com]/supervisor
+ ```
+Change [your-taskmanager-domain.com] for your task-manager application domain.
