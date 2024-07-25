@@ -19,54 +19,53 @@
 </p>
 
 
-## Sobre Task-Manager
+## About Task-Manager
 
-Task-manager é um sistema feito em laravel para gerenciar tarefas em seu servidor. Funcionando como uma interface para ```cronjobs``` e executando tarefas em segundo planno, seja um script linux, um arquivo PHP, ou um comando especifico em seu servidor de produção, sendo possível rodar em servidores dedicados e compartilhados.
+Task-manager is a Laravel system for managing tasks on your server. It functions as an interface for ```cronjobs``` and executes tasks in the background, whether it's a Linux script, a PHP file, or a specific command on your production server. It can run on both dedicated and shared servers.
 
-## Serviços de hospedagem testados
+## Tested Hosting Services
 
-| serviço | provedor | status |
+| Service | Provider | Status |
 |---------|----------|--------|
-| Hospedagem dedicada | Hostinger | ✅ |
-| Hospegame Compartilhada | Hostinger | ✅ |
-| Hospedagem Premium | Hostigator | ✅ |
-| Hospedagem Compartilhada | Hostigator | ✅
-| Hospedagem Dedicada | Digital Ocean | ✅ |
+| Dedicated Hosting | Hostinger | ✅ |
+| Shared Hosting | Hostinger | ✅ |
+| Premium Hosting | Hostigator | ✅ |
+| Shared Hosting | Hostigator | ✅ |
+| Dedicated Hosting | Digital Ocean | ✅ |
 
-## instalação
+## Installation
 
-Para efetuar a instalação é necessario ter como requisitos:
+To install, the following requirements are needed:
 
->- PHP na verão 8.2 ou superior
->- composer na versão 2.7 ou superior
->- cURL instalado
->- Banco de dados sqlite3, Mysql, Postgresql ou MongoDB
+>- PHP version 8.2 or higher
+>- Composer version 2.7 or higher
+>- cURL installed
+>- Database: sqlite3, MySQL, PostgreSQL, or MongoDB
 
-#### Passo a passo para instalação
-* Clone este repositorio ou baixe em seu servidor.
-* instale as dependências com composer:
+#### Step-by-Step Installation
+* Clone this repository or download it to your server.
+* Install the dependencies with composer:
 ```sh
 composer install --no-interaction --prefer-dist --optimize-autoloader
 ```
-* Crie um arquivo ```.env``` a partir do ```.env.example```:
+* Create a ```.env``` file from the ```.env.example``` file:
 ```sh
 cat .env.example >> .env
 ```
-* Gere uma chave para aplicação :
+* Generate an application key:
 ```sh
 php artisan key:generate
 ```
-* Execute a migração do sistema
+* Run the system migration
 ```sh
 php artisan migrate
 ```
 
-## Configurando serviços
+## Configuring Services
 
-Após a instalação, o sistema ja é acessivel atraves da url da sua instalação.
-Para acessar o painel basta utilizar a rota ```/manager```. 
+After installation, the system is accessible via the installation URL.
+To access the panel, use the route ```/manager```.
 
-Contudo, o sistema ainda precisa ser configurado. Para o sistema funcionar, é necessario apontar apenas 1 cronjob para o endpoint ```/supervisor```. Desta forma, o sistema executa internamente o comando ```app:supervisor``` onde mantem os processos e serviços registrados continuamente em execução de acordo com a configuraão e intervalo inseridos.
+However, the system still needs to be configured. For the system to function, you need to point only 1 cronjob to the endpoint ```/supervisor```. This way, the system internally executes the command ```app:supervisor```, which keeps the registered processes and services running continuously according to the configuration and interval set.
 
->- NOTA: Para garantir que os serviços do Manager permaneçam sempre em execução, recomenda-se usar o instervalo de 1 minuto para o cronjob.
-
+>- NOTE: To ensure that the Manager's services remain always running, it is recommended to use a 1-minute interval for the cronjob.
