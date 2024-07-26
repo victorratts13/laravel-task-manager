@@ -8,7 +8,10 @@
 document.addEventListener('livewire:init', () => {
     console.log('core loaded');
     Livewire.on('page-process-details', (event) => {
-        console.log(event);
         Livewire.dispatch('determine-command-type', {command: event.record.command});
+    });
+
+    Livewire.on('page-monitor', (event) => {
+        Livewire.dispatch('load-monitor');
     });
 });
