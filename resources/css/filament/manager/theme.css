@@ -6,3 +6,25 @@
     --tw-bg-opacity: 1;
     background-color: #04111e !important;
 }
+
+.hide-in-smarphone {
+    display: none;
+}
+
+/* Hide content in smartphone */
+@media (min-width: 480px) {
+    .hide-in-smarphone {
+        display: block;
+    }
+}
+
+.hide-in-desktop {
+    display: none;
+}
+
+/* hide content in desktop */
+@media (max-width: 480px) {
+    .hide-in-desktop {
+        display: block;
+    }
+}

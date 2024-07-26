@@ -30,6 +30,8 @@ class EnviromentResource extends Resource
 {
     protected static ?string $model = Enviroment::class;
 
+    protected static ?string $label = "Enviroment";
+
     protected static ?string $navigationIcon = 'heroicon-c-cog';
 
 

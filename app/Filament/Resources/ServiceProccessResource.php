@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ServiceProccessResource\Pages;
+use App\Filament\Resources\ServiceProccessResource\Pages\ServiceDetails;
 use App\Filament\Resources\ServiceProccessResource\RelationManagers;
 use App\Models\Enviromet;
 use App\Models\ServiceProccess;
@@ -24,6 +25,9 @@ use Illuminate\Support\Str;
 class ServiceProccessResource extends Resource
 {
     protected static ?string $model = ServiceProccess::class;
+
+    protected static ?string $label = "Command service";
+
 
     protected static ?string $navigationIcon = 'heroicon-c-command-line';
 
@@ -61,7 +65,9 @@ class ServiceProccessResource extends Resource
                 TextColumn::make('pid')->label('PID')->icon('heroicon-c-list-bullet'),
                 TextColumn::make('command')->icon('heroicon-c-command-line')->limit(30),
                 TextColumn::make('tag')->badge('primary')->icon('heroicon-s-tag'),
-                TextColumn::make('uuid')->limit(20)->icon('heroicon-c-link'),
+                TextColumn::make('uuid')->limit(20)->icon('heroicon-c-link')->url(function($record){
+                    return "/manager/service-proccesses/{$record->id}/details";
+                }),
                 TextColumn::make('interval')->icon('heroicon-s-clock')->suffix(' Sec.'),
                 TextColumn::make('last_execution')->dateTime('d/m/Y H:i')
             ])
@@ -85,6 +91,7 @@ class ServiceProccessResource extends Resource
     {
         return [
             'index' => Pages\ManageServiceProccesses::route('/'),
+            'details' => ServiceDetails::route('/{record}/details')
         ];
     }
 }
