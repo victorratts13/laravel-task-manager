@@ -47,7 +47,7 @@ class ComandExecJob implements ShouldQueue
             $prepare = "cd {$this->proccess->enviroment()->first()->path} && {$this->proccess->command}";
             $this->ExecuteCommand($prepare);
             // exec($prepare);
-            $proccessInfo = $this->getProcessInfo($this->proccess->command)->first();
+            $proccessInfo = $this->getProcessInfo($this->proccess->command)->sortByDesc('pid')->first();
             if(isset($proccessInfo)){
                 ServiceProccess::where('id', $this->proccess->id)->first()->update(['pid' => $proccessInfo->pid]);
             }
@@ -60,9 +60,10 @@ class ComandExecJob implements ShouldQueue
                 ]);
             }
         } else {
-            $proccessInfo = $this->getProcessInfo($this->proccess->command)->first();
+            $proccessInfo = $this->getProcessInfo($this->proccess->command)->sortByDesc('pid')->first();
             if(isset($proccessInfo)){
                 ServiceProccess::where('id', $this->proccess->id)->first()->update(['pid' => $proccessInfo->pid]);
+
             }
         }
     }
