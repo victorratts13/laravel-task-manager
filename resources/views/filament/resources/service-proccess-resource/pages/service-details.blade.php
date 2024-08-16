@@ -1,8 +1,9 @@
 <x-filament-panels::page>
     <script src="{{ asset('/js/core/core.js') }}"></script>
-    <div style="display: flex; justify-content: start;">
-        <x-avatar xl rounded="rounded-[1.25rem]" :src="asset($commandSource?->image)" style="width: 20vw; margin-right: 30px;"
-            border="none" />
+    <div style="display: flex; justify-content:space-between;">
+        {{-- <x-avatar xl rounded="rounded-[1.25rem] w-50" :src="asset($commandSource?->image)" style="width: 20vw; margin-right: 30px;"
+            border="none" /> --}}
+        <img src="{{asset($commandSource?->image)}}" style=" width: 230px; margin-right: 20px;" class="hide-in-smarphone shrink-0 inline-flex items-center justify-center overflow-hidden border-secondary-200 dark:border-secondary-500 border-0 rounded-[1.25rem]" />
         <div style="display: flex; width: 100%; position: relative; flex-wrap: wrap;">
             <div
                 style="display: flex; justify-content: space-between; width: 100%; border: dashed 2px; height: 40px; padding: 5px; border-radius: 5px; font-size: 20px; margin-bottom: 5px; position: relative;">

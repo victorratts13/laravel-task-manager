@@ -118,8 +118,6 @@ class Supervisor extends Command
     private function CheckComandStatus(string $comand)
     {
         $process = $this->ExecuteCommand('ps aux');
-        // dd($process);
-        // dd(strpos($process->buffer, $comand));
         return strpos($process->buffer, $comand);
     }
 

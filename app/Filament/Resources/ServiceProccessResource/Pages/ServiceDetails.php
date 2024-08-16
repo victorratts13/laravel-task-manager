@@ -30,7 +30,7 @@ class ServiceDetails extends Page
             'fullname' => "PHP: Hypertext Preprocessor",
             'image' => "/icons/php.svg",
             'isDefault' => false,
-            'commands' => ['php']
+            'commands' => ['php', 'php-fpm']
         ],
         'python' => [
             'name' => "Python",
@@ -89,6 +89,13 @@ class ServiceDetails extends Page
             'image' => "/icons/docker.svg",
             'isDefault' => false,
             'commands' => ['docker']
+        ],
+        'curl' => [
+            'name' => "curl",
+            'fullname' => "cURL",
+            'image' => "/icons/curl.svg",
+            'isDefault' => false,
+            'commands' => ['curl']
         ],
     ];
 

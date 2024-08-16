@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\TaskManagerController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,5 +18,9 @@ class ServiceProccess extends Model
 
     public function logs() {
         return $this->hasMany(ServiceLogs::class, 'service', 'id');
+    }
+
+    public function info(string $command) {
+        return (new TaskManagerController($command));
     }
 }

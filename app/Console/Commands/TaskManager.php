@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Jobs\ComandExecJob;
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\Process\Process;
 
 class TaskManager extends Command
@@ -37,6 +38,15 @@ class TaskManager extends Command
         
         while (true) {
             // Process::fromShellCommandline("clear");
+            $tasklist = Cache::get('task-manager-provider');
+
+            if(!isset($tasklist)){
+                $output = [];
+                $command = "ps aux | grep -v grep";
+                exec($command, $output);
+                Cache::put('task-manager-provider', $output, 2);
+            }
+
             $this->info('| Checking users');
             foreach ($users as $user) {
                 $this->warn("|- {$user->name}");
