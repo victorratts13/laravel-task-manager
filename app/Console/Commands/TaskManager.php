@@ -44,7 +44,7 @@ class TaskManager extends Command
                 $output = [];
                 $command = "ps aux | grep -v grep";
                 exec($command, $output);
-                Cache::put('task-manager-provider', $output, 2);
+                Cache::put('task-manager-provider', $output, 10);
             }
 
             $this->info('| Checking users');

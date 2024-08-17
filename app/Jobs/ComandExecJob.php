@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Http\Controllers\BackEndController;
+use App\Http\Controllers\TaskManagerController;
 use App\Models\Enviromet;
 use App\Models\ServiceLogs;
 use App\Models\ServiceProccess;
@@ -46,8 +47,9 @@ class ComandExecJob implements ShouldQueue
         if(!$this->CheckComandStatus($this->proccess->command)){
             $prepare = "cd {$this->proccess->enviroment()->first()->path} && {$this->proccess->command}";
             $this->ExecuteCommand($prepare);
-            // exec($prepare);
-            $proccessInfo = $this->getProcessInfo($this->proccess->command)->sortByDesc('pid')->first();
+            $taskManager = new TaskManagerController();
+            // $proccessInfo = $this->getProcessInfo($this->proccess->command)->sortByDesc('pid')->first();
+            $proccessInfo = $taskManager->psaux()->where('command', $this->proccess->command)->first();
             if(isset($proccessInfo)){
                 ServiceProccess::where('id', $this->proccess->id)->first()->update(['pid' => $proccessInfo->pid]);
             }

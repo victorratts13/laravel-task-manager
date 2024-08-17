@@ -69,12 +69,12 @@ class ServiceProccessResource extends Resource
                             $exec = (new TaskManagerController($record->command))->kill();
                             Notification::make()
                                 ->info()
-                                ->body('kill process')
+                                ->body($exec->message)
                                 ->send();
                         } else {
                             Notification::make()
                                 ->info()
-                                ->body('start process')
+                                ->body('started process')
                                 ->send();
                         }
                     }),

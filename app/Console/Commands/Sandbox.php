@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\BackEndController;
+use App\Http\Controllers\TaskManagerController;
 use Illuminate\Console\Command;
 
 class Sandbox extends Command
@@ -26,7 +27,6 @@ class Sandbox extends Command
      */
     public function handle()
     {
-        $backend = new BackEndController();
-        dd($backend->loadEnvironmentFromString("FOO=BAR"));
+       // --
     }
 }

@@ -16,7 +16,7 @@ class TaskManagerController extends Controller
     public Collection $index;
     public UtilsController $utils;
 
-    public function __construct(string $command)
+    public function __construct(string $command = "")
     {
         $this->command = $command;
         $this->utils = new UtilsController();
@@ -32,15 +32,7 @@ class TaskManagerController extends Controller
     {
         $command = $this->command;
         $status = $this->utils->CheckComandStatus($command);
-        Log::info(["command" => $command, "status" => $status]);
         return $status;
-        // dd($status);
-        // return $this
-        //     ->psaux()
-        //     ->filter(function ($mp) use ($command) {
-        //         return $;
-        //     })
-        //     ->first() ?? false;
     }
 
     public function kill() {

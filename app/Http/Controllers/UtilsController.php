@@ -111,9 +111,9 @@ class UtilsController extends Controller
                     $processes[] = (object)[
                         'id' => $key,
                         'user' => $columns[0],
-                        'pid' => $columns[1],
-                        'cpu' => $columns[2],
-                        'mem' => $columns[3],
+                        'pid' => intval($columns[1]),
+                        'cpu' => ($columns[2]),
+                        'mem' => ($columns[3]),
                         'vsz' => $columns[4],
                         'rss' => $columns[5],
                         'tt' => $columns[6],
@@ -150,13 +150,13 @@ class UtilsController extends Controller
             if (Process::ERR === $type) {
                 $this->proccessInfo = (object)[
                     'status' => false,
-                    'message' => "| ❌ ERROR: um erro aconteceu ao executar o processo",
+                    'message' => "| ❌ ERROR: Fail to execute the process, please, update process",
                     'buffer' => $buffer
                 ];
             } else {
                 $this->proccessInfo = (object) [
                     'status' => true,
-                    'message' => "| ✅ Comando executado com sucesso!",
+                    'message' => "| ✅ Command executed withsuccess!",
                     'buffer'  => $buffer
                 ];
             }
