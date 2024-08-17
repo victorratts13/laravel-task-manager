@@ -51,6 +51,8 @@ class InternalMonitor extends Command
                 })
                 ->values();
 
+                dump($result);
+
             $this->table([
                 '#ID',
                 'PID',
