@@ -40,6 +40,7 @@ class InternalMonitor extends Command
                     return Str::contains($mp->command, $command);
                 })
                 ->map(function ($mp) {
+                    dump($mp);
                     return [
                         $mp->id,
                         $mp->pid,
