@@ -69,7 +69,7 @@ class InternalMonitor extends Command
                         $mp->user,
                         $mp->cpu,
                         $mp->mem,
-                        substr($mp->command, 0, 32) . '...' . substr($mp->command, (strlen($mp->command) - 32), (strlen($mp->command) + 32))
+                        substr($mp->command, 0, 32) . '...' . substr($mp->command, (strlen($mp->command) - 32), (strlen($mp->command)))
                     ];
                 })
                 ->values();
