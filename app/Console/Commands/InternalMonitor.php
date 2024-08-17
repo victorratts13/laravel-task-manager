@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\TaskManagerController;
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 class InternalMonitor extends Command
 {
@@ -36,8 +37,7 @@ class InternalMonitor extends Command
                 ->psaux()
                 // ->where('command', $command)
                 ->filter(function($mp) use ($command){
-                    return strpos($mp->command, $command);
-                    return false;
+                    return Str::contains($mp->command, $command);
                 })
                 ->map(function ($mp) {
                     return [
