@@ -36,8 +36,14 @@ class InternalMonitor extends Command
             $result = $taskManager
                 ->psaux()
                 // ->where('command', $command)
-                ->filter(function($mp) use ($command){
-                    return Str::contains($mp->command, $command);
+                ->filter(function ($mp) use ($command) {
+                    if (Str::contains($mp->command, $command)) {
+                        return true;
+                    } else if (Str::contains($command, $mp->command)) {
+                        return true;
+                    } else {
+                        return false;
+                    };
                 })
                 ->map(function ($mp) {
                     dump($mp);
@@ -52,7 +58,7 @@ class InternalMonitor extends Command
                 })
                 ->values();
 
-                dump($result);
+            dump($result);
 
             $this->table([
                 '#ID',
