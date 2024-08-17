@@ -139,7 +139,13 @@ class UtilsController extends Controller
     public function CheckComandStatus(string $comand)
     {
         return $this->monitor()->filter(function($mp) use ($comand){
-            return strpos($mp->command, $comand);
+            if(strpos($mp->command, $comand)){
+                return true;
+            } else if(strpos($comand, $mp->command)){
+                return true;
+            } else {
+                return false;
+            }
         })->first() ?? false;
     }
 
