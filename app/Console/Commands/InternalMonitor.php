@@ -64,7 +64,7 @@ class InternalMonitor extends Command
             $result = $taskManager
                 ->psaux()
                 ->map(function ($mp) {
-                    $command = (strlen($mp->command) > 64 ? substr($mp->command, 0, 32) . '...' . substr($mp->command, (strlen($mp->command) - 32), (strlen($mp->command))) : $mp->command);
+                    $command = (strlen($mp->command) > 64 ? substr($mp->command, 0, 64) . '...' . substr($mp->command, (strlen($mp->command) - 64), (strlen($mp->command))) : $mp->command);
                     return [
                         $mp->id,
                         $mp->pid,
