@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ServiceProccess;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
@@ -18,7 +19,7 @@ class UtilsController extends Controller
 
         // Caminho para o arquivo zip
 
-        if(!strpos("/", $zipFilename)){
+        if (!strpos("/", $zipFilename)) {
             $zipFilePath = base_path($zipFilename);
         } else {
             $zipFilePath = $zipFilename;
@@ -82,7 +83,8 @@ class UtilsController extends Controller
         return $filesToZip;
     }
 
-    public static function nameDir($path) {
+    public static function nameDir($path)
+    {
         return array_reverse(explode("/", $path))[0];
     }
 
@@ -104,7 +106,7 @@ class UtilsController extends Controller
         $processes = array();
         $output = Cache::get('task-manager-provider');
 
-        if(isset($output)){
+        if (isset($output)) {
             foreach ($output as $key => $line) {
                 $columns = preg_split('/\s+/', $line);
                 if (count($columns) >= 11) {
@@ -125,9 +127,9 @@ class UtilsController extends Controller
                     ];
                 }
             }
-    
+
             unset($processes[0]);
-    
+
             return collect($processes);
         } else {
             return collect([]);
@@ -138,10 +140,10 @@ class UtilsController extends Controller
 
     public function CheckComandStatus(string $comand)
     {
-        return $this->monitor()->filter(function($mp) use ($comand){
-            if(strpos($mp->command, $comand)){
+        return $this->monitor()->filter(function ($mp) use ($comand) {
+            if (strpos($mp->command, $comand)) {
                 return true;
-            } else if(strpos($comand, $mp->command)){
+            } else if (strpos($comand, $mp->command)) {
                 return true;
             } else {
                 return false;
@@ -152,21 +154,25 @@ class UtilsController extends Controller
     public function ExecuteCommand(string $command)
     {
         $process = Process::fromShellCommandline($command);
-        $process->start(function ($type, $buffer) {
+        $process->start(function ($type, $buffer) use ($process){
             if (Process::ERR === $type) {
                 $this->proccessInfo = (object)[
                     'status' => false,
                     'message' => "| ❌ ERROR: Fail to execute the process, please, update process",
-                    'buffer' => $buffer
+                    'buffer' => $buffer,
+                    'pid' => 0
                 ];
             } else {
                 $this->proccessInfo = (object) [
                     'status' => true,
                     'message' => "| ✅ Command executed withsuccess!",
-                    'buffer'  => $buffer
+                    'buffer'  => $buffer,
+                    'pid' => 0
                 ];
             }
         });
+
+        $pid = $process->getPid();
 
         // Aguarda até que o processo seja iniciado
         while ($process->isRunning()) {
@@ -174,12 +180,15 @@ class UtilsController extends Controller
         }
 
         if (isset($this->proccessInfo)) {
+            $this->proccessInfo->pid = $pid;
             return $this->proccessInfo;
         }
 
         return (object) [
             'status' => false,
-            'message' => "| Processo retornou null ou vazio"
+            'pid' => 0,
+            'message' => "| Processo retornou null ou vazio",
+            'buffer' => "****** Warning ****** \n| No buffer logs is generated for this process."
         ];
     }
 }

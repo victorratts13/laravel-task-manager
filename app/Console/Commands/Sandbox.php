@@ -20,13 +20,13 @@ class Sandbox extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Tests enviroment';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-       // --
+       dd((new TaskManagerController())->ExecPid("watch ps aux"));
     }
 }

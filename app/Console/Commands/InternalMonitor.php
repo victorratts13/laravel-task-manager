@@ -46,7 +46,7 @@ class InternalMonitor extends Command
                     };
                 })
                 ->map(function ($mp) {
-                    dump($mp);
+                    // dump($mp);
                     return [
                         $mp->id,
                         $mp->pid,
@@ -58,7 +58,7 @@ class InternalMonitor extends Command
                 })
                 ->values();
 
-            dump($result);
+            // dump($result);
 
             $this->table([
                 '#ID',

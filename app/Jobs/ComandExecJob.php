@@ -2,11 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Http\Controllers\ApiConnectorController;
 use App\Http\Controllers\BackEndController;
 use App\Http\Controllers\TaskManagerController;
 use App\Models\Enviromet;
 use App\Models\ServiceLogs;
 use App\Models\ServiceProccess;
+use GuzzleHttp\Client;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
@@ -37,37 +39,65 @@ class ComandExecJob implements ShouldQueue
     public function handle(): void
     {
 
-        $backend = new BackEndController();
-        $enviroment = $this->proccess->enviroment()->first();
-        
-        if(isset($enviroment->variables)){
-            $backend->loadEnvironmentFromString($enviroment->variables);
-        }
+        try {
+            // Log::debug("Carregando tarefa");
+            $backend = new BackEndController();
+            $enviroment = $this->proccess->enviroment()->first();
+            if (isset($enviroment->variables)) {
+                $backend->loadEnvironmentFromString($enviroment->variables);
+            }
 
-        if(!$this->CheckComandStatus($this->proccess->command)){
-            $prepare = "cd {$this->proccess->enviroment()->first()->path} && {$this->proccess->command}";
-            $this->ExecuteCommand($prepare);
-            $taskManager = new TaskManagerController();
-            // $proccessInfo = $this->getProcessInfo($this->proccess->command)->sortByDesc('pid')->first();
-            $proccessInfo = $taskManager->psaux()->where('command', $this->proccess->command)->first();
-            if(isset($proccessInfo)){
-                ServiceProccess::where('id', $this->proccess->id)->first()->update(['pid' => $proccessInfo->pid]);
-            }
-            
-            if($this->proccess->loggable){
-                ServiceLogs::create([
-                    'service' => $this->proccess->id,
-                    'command' => $this->proccess->command,
-                    'output' => $this->proccessInfo->buffer
-                ]);
-            }
-        } else {
-            $proccessInfo = $this->getProcessInfo($this->proccess->command)->sortByDesc('pid')->first();
-            if(isset($proccessInfo)){
-                ServiceProccess::where('id', $this->proccess->id)->first()->update(['pid' => $proccessInfo->pid]);
 
+            // Log::info("Ambiente carregado com sucesso!");
+            // Log::debug("Verificando se o comando '{$this->proccess->command}' está em execução");
+            if (!$this->CheckComandStatus($this->proccess->command)) {
+                // Log::warning("Comando não iniciado");
+                // Log::info("Preparando processo");
+                $prepare = "cd {$this->proccess->enviroment()->first()->path} && {$this->proccess->command}";
+                // Log::info("{$prepare}");
+                // Log::debug("Executando...");
+                $pid = $this->runCommandAndGetPid($prepare);
+                // Log::info($pid);
+                ServiceProccess::where('id', $this->proccess->id)->first()->update(['pid' => $pid, 'last_execution' => now()]);
+                // Log::debug("Atualizando...");
+                // $this->ExecuteCommand($prepare);
+                // $taskManager = new TaskManagerController();
+                // $proccessInfo = $this->getProcessInfo($this->proccess->command)->sortByDesc('pid')->first();
+                // $proccessInfo = $taskManager->psaux()->where('command', $this->proccess->command)->first();
+                // if(isset($proccessInfo)){
+                //     ServiceProccess::where('id', $this->proccess->id)->first()->update(['pid' => $proccessInfo->pid]);
+                // }
+                // Log::debug("Finalizando");
+                if ($this->proccess->loggable) {
+                    ServiceLogs::create([
+                        'service' => $this->proccess->id,
+                        'command' => $this->proccess->command,
+                        'output' => $this->proccessInfo->buffer
+                    ]);
+                }
+
+                // Log::info("Processo finalizado!");
+            } else {
+                // $proccessInfo = $this->getProcessInfo($this->proccess->command)->sortByDesc('pid')->first();
+                // Log::alert("Processo em execução, Atualizando PID");
+                $proccessInfo = (new TaskManagerController($this->proccess->command))->status();
+                // Log::info($proccessInfo);
+                if ($proccessInfo) {
+                    ServiceProccess::where('id', $this->proccess->id)->first()->update(['pid' => $proccessInfo->pid, 'last_execution' => now()]);
+                }
             }
+        } catch (\Throwable $th) {
+            Log::error($th);
         }
+    }
+
+    private function runCommandAndGetPid(string $command)
+    {
+        // Log::debug("Carregando processo do conector...");
+        $connector = (new ApiConnectorController())->RunCommandAndGetPid($command);
+        $this->proccessInfo->buffer = $connector->buffer;
+        // Log::info("Processo finalizado");
+        return $connector->pid;
     }
 
     private function ExecuteCommand(string $command)
@@ -110,7 +140,8 @@ class ComandExecJob implements ShouldQueue
         return strpos($process->buffer, $comand);
     }
 
-    private function GetQueueNames() {
+    private function GetQueueNames()
+    {
         $queues = DB::table('jobs')->select('queue')->distinct()->pluck('queue');
         return $queues;
     }
