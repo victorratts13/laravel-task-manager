@@ -45,7 +45,7 @@ class BackEndController extends Controller
     function loadEnvironmentFromString($envString)
     {
         // Cria um repositório para armazenar as variáveis de ambiente
-        $repository = RepositoryBuilder::createWithDefaultAdapters()->immutable()->make();
+        // $repository = RepositoryBuilder::createWithDefaultAdapters()->immutable()->make();
 
         // Usa o StringStore para criar um armazenamento a partir da string
         $store = new StringStore($envString);

@@ -52,7 +52,7 @@ class Supervisor extends Command
             }
         }
 
-        info($checkComandProccess);
+        // info($checkComandProccess);
 
         foreach ($checkComandProccess as $check => $comand) {
             $checker = $this->CheckComandStatus($check);
