@@ -43,11 +43,8 @@ class ComandExecJob implements ShouldQueue
             
             $backend = new BackEndController();
             $enviroment = $this->proccess->enviroment()->first();
-            Log::warning(["message" => 'loading enviromens...', "data" => $enviroment]);
             if (isset($enviroment->variables)) {
-                Log::warning(["message" => 'Insert enviroment', "data" => $enviroment]);
                 $loadedEnv = $backend->loadEnvironmentFromString($enviroment->variables);
-                Log::info(["message" => 'Enviroment loaded', "data" => $loadedEnv]);
             }
 
             // $commandStatus = $this->CheckComandStatus($this->proccess->command);

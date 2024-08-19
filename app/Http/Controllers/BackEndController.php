@@ -54,7 +54,10 @@ class BackEndController extends Controller
         $parser = new Parser();
         $entries = $parser->parse($store->read());
         foreach ($entries as $entry) {
-            $_ENV[$entry->getName()] = (string)$entry->getValue()->get()->getChars();
+            $envKey = $entry->getName();
+            $envItem = (string)$entry->getValue()->get()->getChars();
+            $_ENV[$envKey] = $envItem;
+            putenv("{$envKey}={$envItem}");
         }
         return (object)$_ENV;
     }
