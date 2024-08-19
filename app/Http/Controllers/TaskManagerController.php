@@ -49,22 +49,28 @@ class TaskManagerController extends Controller
         return $status;
     }
 
+    public function pidStatus($pid)
+    {
+        $output = $this->utils->ExecuteCommand("ps -p $pid")->buffer;
+        return strpos($output, (string)$pid) !== false;
+    }
+
     public function kill(int $pid = 0)
     {
         $kill = false;
-        if($pid > 0){
+        if ($pid > 0) {
             $kill = $this->utils->ExecuteCommand("kill {$pid}");
-            if(posix_kill($pid, 0)){
+            if (posix_kill($pid, 0)) {
                 return $kill;
             }
-        } else if(!empty($this->command)){
+        } else if (!empty($this->command)) {
             $kill = $this->utils->ExecuteCommand("pkill -f '{$this->command}'");
-            if(posix_kill($pid, 0)){
+            if (posix_kill($pid, 0)) {
                 return $kill;
             }
-        } else if(!empty($this->pid)){
+        } else if (!empty($this->pid)) {
             $kill = $this->utils->ExecuteCommand("kill -f {$this->pid}");
-            if(posix_kill($pid, 0)){
+            if (posix_kill($pid, 0)) {
                 return $kill;
             }
         }
