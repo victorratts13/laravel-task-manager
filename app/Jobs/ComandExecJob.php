@@ -76,9 +76,7 @@ class ComandExecJob implements ShouldQueue
     {
         // Log::debug("Carregando processo do conector...");
         $connector = (new ApiConnectorController())->RunCommandAndGetPid($command);
-        $buffer = $connector->buffer;
-        Log::info($buffer);
-        $this->proccessInfo['buffer'] = $buffer;
+        $this->proccessInfo = $connector;
         // Log::info("Processo finalizado");
         return $connector->pid;
     }
