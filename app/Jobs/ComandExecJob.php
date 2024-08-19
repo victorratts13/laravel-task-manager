@@ -22,7 +22,12 @@ class ComandExecJob implements ShouldQueue
 {
     use Queueable;
     public $proccess;
-    private object $proccessInfo;
+    private object $proccessInfo = (object)[
+        'status' => false,
+        'message' => null,
+        'buffer' => null,
+        'pid' => 0
+    ];
 
     /**
      * Create a new job instance.
@@ -76,9 +81,6 @@ class ComandExecJob implements ShouldQueue
     {
         // Log::debug("Carregando processo do conector...");
         $connector = (new ApiConnectorController())->RunCommandAndGetPid($command);
-        Log::alert([
-            'connector' => $connector
-        ]);
         $this->proccessInfo->buffer = $connector->buffer;
         // Log::info("Processo finalizado");
         return $connector->pid;
